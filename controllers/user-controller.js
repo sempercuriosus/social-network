@@ -89,6 +89,27 @@ const userController = {
         }
     },
 
+
+    // Add Friend
+    async addFriend (req, res) {
+
+        const userId = req.params.userId;
+        // Friend ID is a userId, but of another user we are associating to the user making the request
+        const friendId = req.params.friendId;
+
+        if (!userId || !friendId) {
+            return res.status(400).json('You must supply the userId and friendId to add a user.');
+        }
+
+        const singleUser = await User.findOneAndUpdate({ _id: userId }, { $addToSet: { friends: friendId } }, { new: true });
+
+        if (!singleUser) {
+            return res.status(404).json('User ID was not found');
+        }
+
+        res.status(200).json(singleUser);
+    },
+
     // #endregion POST ROUTES
 
     // #region PUT ROUTES
@@ -145,8 +166,27 @@ const userController = {
 
             res.status(500).json('NO DATA');
         }
-    }
+    },
 
+    // Delete Friend
+    async deleteFriend (req, res) {
+
+        const userId = req.params.userId;
+        // Friend ID is a userId, but of another user we are associating to the user making the request
+        const friendId = req.params.friendId;
+
+        if (!userId || !friendId) {
+            return res.status(400).json('You must supply the userId and friendId to add a user.');
+        }
+
+        const singleUser = await User.findOneAndUpdate({ _id: userId }, { $pull: { friends: friendId } }, { new: true });
+
+        if (!singleUser) {
+            return res.status(404).json('User ID was not found');
+        }
+
+        res.status(200).json(singleUser);
+    },
     // #endregion DELETE ROUTES
 
 };
