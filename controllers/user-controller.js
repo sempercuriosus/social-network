@@ -25,7 +25,7 @@ const userController = {
         } catch (err) {
             createMessage('Users Error', 'Cannot get the users...', 'getAllUsers', err);
 
-            res.status(500).json('NO DATA');
+            res.status(500).json({ "response": 'NO DATA' });
         }
     },
 
@@ -36,7 +36,7 @@ const userController = {
 
             if (!userId) {
                 // this really would not ever happen. without the param, the route would end up being `users/` returning all users, which is fine 
-                return res.status(400).json('You must supply the userId to find a single user.');
+                return res.status(400).json({ "response": 'You must supply the userId to find a single user.' });
             }
 
             const singleUser = await User.find()
@@ -47,14 +47,14 @@ const userController = {
 
             if (!singleUser || singleUser.length === 0) {
                 // not sure why this returns an empty array and the other returns null
-                return res.status(404).json('The user with the userId ' + userId + ' was not found.');
+                return res.status(404).json({ "response": 'The user with the userId ' + userId + ' was not found.' });
             }
 
             res.status(200).json(singleUser);
         } catch (err) {
             createMessage('Users Error', 'Cannot get the user...', 'getOneUser', err);
 
-            res.status(500).json('NO DATA');
+            res.status(500).json({ "response": 'NO DATA' });
         }
     },
 
@@ -73,7 +73,7 @@ const userController = {
             const email = req.body.email;
 
             if (!username || !email) {
-                return res.status(400).json('You must supply the username and email address to add a user.');
+                return res.status(400).json({ "response": 'You must supply the username and email address to add a user.' });
             }
 
             const singleUser = await User.create({ username, email });
@@ -98,13 +98,13 @@ const userController = {
         const friendId = req.params.friendId;
 
         if (!userId || !friendId) {
-            return res.status(400).json('You must supply the userId and friendId to add a user.');
+            return res.status(400).json({ "response": 'You must supply the userId and friendId to add a user.' });
         }
 
         const singleUser = await User.findOneAndUpdate({ _id: userId }, { $addToSet: { friends: friendId } }, { new: true });
 
         if (!singleUser) {
-            return res.status(404).json('User ID was not found');
+            return res.status(404).json({ "response": 'User ID was not found' });
         }
 
         res.status(200).json(singleUser);
@@ -124,7 +124,7 @@ const userController = {
         const emailUpdate = req.body.email;
 
         if (!userId || !usernameUpdate || !emailUpdate) {
-            return res.status(400).json('You must supply the userId, username, and email address to update.');
+            return res.status(400).json({ "response": 'You must supply the userId, username, and email address to update.' });
         }
 
         try {
@@ -134,7 +134,7 @@ const userController = {
         } catch (err) {
             createMessage('Update User Error', 'There was an error when attempting to update the user: ' + userId, 'updateUser', err);
 
-            res.status(500).json('NO DATA');
+            res.status(500).json({ "response": 'NO DATA' });
         }
     },
 
@@ -149,7 +149,7 @@ const userController = {
         const userId = req.params.userId;
 
         if (!userId) {
-            return res.status(400).json('You must supply the userId to delete the user.');
+            return res.status(400).json({ "response": 'You must supply the userId to delete the user.' });
         }
 
         try {
@@ -157,14 +157,14 @@ const userController = {
 
             // Assuming that the userToDelete being null/not existing means the user was also not found
             if (!userToDelete) {
-                return res.status(404).json('The user was not found.');
+                return res.status(404).json({ "response": 'The user was not found.' });
             }
 
             res.status(204).json(userToDelete);
         } catch (err) {
             createMessage('Delete User Error', 'There was an error when deleting the user: ' + userId, 'deleteUser', err);
 
-            res.status(500).json('NO DATA');
+            res.status(500).json({ "response": 'NO DATA' });
         }
     },
 
@@ -176,13 +176,13 @@ const userController = {
         const friendId = req.params.friendId;
 
         if (!userId || !friendId) {
-            return res.status(400).json('You must supply the userId and friendId to add a user.');
+            return res.status(400).json({ "response": 'You must supply the userId and friendId to add a user.' });
         }
 
         const singleUser = await User.findOneAndUpdate({ _id: userId }, { $pull: { friends: friendId } }, { new: true });
 
         if (!singleUser) {
-            return res.status(404).json('User ID was not found');
+            return res.status(404).json({ "response": 'User ID was not found' });
         }
 
         res.status(200).json(singleUser);
