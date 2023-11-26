@@ -1,7 +1,7 @@
 // Imports
 
 const { Schema, Types, model } = require('mongoose');
-const dateFormat = require('../utils/dates');
+const { dateFormat } = require('../utils/dates');
 
 // Schema Create
 const reactionSchema = new Schema(
@@ -26,7 +26,7 @@ const reactionSchema = new Schema(
             default: Date.now,
             // want to avoid a virtal here, such that, I do NOT have to use a different field name at each implementation of the formatted date, and the get is called 
             get: function (toFormat) {
-                return formatDate(toFormat);
+                return formatTimestamp(toFormat, 'dmy');
             }
         }
 

@@ -1,24 +1,26 @@
 
 // Imports
 const router = require('express').Router();
-const controller = require('../../controllers/user-controller');
+const users = require('../../controllers/user-controller');
+
 
 // ALL Users
-router.get('/', controller.getAllUsers);
-
-// ONE (single) User 
-router.get('/:userId', controller.getOneUser);
-
-// Add a new user
-router.post('/add', controller.newUser);
-
-// Update User
-router.put('/:userId', controller.updateUser);
-
-// Delete User
-router.delete('/:userId', controller.deleteUser);
+router.get('/', users.getAllUsers);
 
 // Ping Server Is Up
-router.get('/ping', controller.userPing);
+router.get('/ping', users.userPing);
+
+// ONE (single) User 
+router.get('/:userId', users.getOneUser);
+
+// Add a new user
+router.post('/add', users.newUser);
+
+// Update User
+router.put('/:userId', users.updateUser);
+
+// Delete User
+router.delete('/:userId', users.deleteUser);
+
 
 module.exports = router;

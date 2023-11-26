@@ -1,6 +1,5 @@
 // Imports
 const { User } = require('../models/user');
-const { Thought } = require('../models/thought');
 const { createMessage } = require('../utils/createMessage');
 const { getUnixTimestamp } = require('../utils/dates');
 
@@ -20,11 +19,11 @@ const userController = {
     // ALL users
     async getAllUsers (req, res) {
         try {
-            const dbUsers = await User.find().select('-__v');
+            const allUsers = await User.find().select('-__v');
 
-            res.status(200).json(dbUsers);
+            res.status(200).json(allUsers);
         } catch (err) {
-            createMessage('Users Error', 'Cannot get the users...', 'Users GET', err);
+            createMessage('Users Error', 'Cannot get the users...', 'getAllUsers', err);
 
             res.status(500).json('NO DATA');
         }
@@ -40,15 +39,20 @@ const userController = {
                 return res.status(400).json('You must supply the userId to find a single user.');
             }
 
-            const dbUsers = await User.find()
+            const singleUser = await User.find()
                 .select('-__v')
                 .where({ _id: userId })
                 .populate('friends')
                 .populate('thoughts');
 
-            res.status(200).json(dbUsers);
+            if (!singleUser || singleUser.length === 0) {
+                // not sure why this returns an empty array and the other returns null
+                return res.status(404).json('The user with the userId ' + userId + ' was not found.');
+            }
+
+            res.status(200).json(singleUser);
         } catch (err) {
-            createMessage('Users Error', 'Cannot get the user...', 'User (single) GET', err);
+            createMessage('Users Error', 'Cannot get the user...', 'getOneUser', err);
 
             res.status(500).json('NO DATA');
         }
@@ -63,10 +67,10 @@ const userController = {
     // add a new user
     async newUser (req, res) {
         try {
-            const timestamp = getUnixTimestamp();
+            // const timestamp = getUnixTimestamp();
 
-            const username = req.body.username + timestamp;
-            const email = timestamp + req.body.email;
+            const username = req.body.username;
+            const email = req.body.email;
 
             if (!username || !email) {
                 return res.status(400).json('You must supply the username and email address to add a user.');
@@ -79,7 +83,7 @@ const userController = {
             res.status(201).json(singleUser);
 
         } catch (err) {
-            createMessage('Adding User Error', 'Cannot get the users...', 'User POST', err);
+            createMessage('Adding User Error', 'Cannot get the users...', 'newUser', err);
 
             res.status(500).json('Please, Try your request again, and if there is an issue contact the Developer.');
         }
@@ -103,11 +107,11 @@ const userController = {
         }
 
         try {
-            const dbUsers = await User.findOneAndUpdate({ _id: userId }, { username: usernameUpdate, email: emailUpdate }, { new: true });
+            const userToUpdate = await User.findOneAndUpdate({ _id: userId }, { username: usernameUpdate, email: emailUpdate }, { new: true });
 
-            res.status(201).json(dbUsers);
+            res.status(201).json(userToUpdate);
         } catch (err) {
-            createMessage('Update User Error', 'There was an error when attempting to update the user: ' + userId, 'User (single) PUT', err);
+            createMessage('Update User Error', 'There was an error when attempting to update the user: ' + userId, 'updateUser', err);
 
             res.status(500).json('NO DATA');
         }
@@ -137,7 +141,7 @@ const userController = {
 
             res.status(204).json(userToDelete);
         } catch (err) {
-            createMessage('Delete User Error', 'There was an error when deleting the user: ' + userId, 'User DELETE', err);
+            createMessage('Delete User Error', 'There was an error when deleting the user: ' + userId, 'deleteUser', err);
 
             res.status(500).json('NO DATA');
         }
