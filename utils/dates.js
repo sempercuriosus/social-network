@@ -5,7 +5,7 @@
   * 
   * 
 */
-const createMessage = require('./createMessage');
+const { createMessage } = require('./createMessage');
 
 const months = [
     'January',
@@ -24,9 +24,10 @@ const months = [
 
 /**
  * @name name
- * @description formatDate
- * @param {string} date string you wnat formatted
- * @param {string} format (optional) you with to use
+ * @description formatTimestamp
+ * @param {string} date string you want formatted
+ * @param {string} format (optional) you want to use when returning the date
+ * @param {string} includeTime (optional) if you want to keep the datestring
  * 
  * Supported formats are 
  * Month-Day-Year (default)
@@ -38,37 +39,52 @@ const months = [
  * use dashes for delimiter
  * @returns formattedDate
 */
-function formatDate (date, format = '') {
+function formatTimestamp (format = 'mdy', includeTime = false) {
 
-    if (!date) {
-        return createMessage('Date Format Error', 'Cannot format empty date', 'formatDate');
-    }
+    const timestamp = new Date();
+    const dateDelimiter = '-';
+    const timeDelimiter = ':';
+    // date
+    const month = months[ timestamp.getMonth() ];
+    const day = timestamp.getDate();
+    const year = timestamp.getFullYear();
+    // format
+    const lowerFormat = format.toString().toLowerCase();
+    let dateParts = [];
+    // time
+    // could use toUTCString(), but leaving this open for further manipulation in the future, if needed
+    const hours = timestamp.getHours();
+    const minutes = timestamp.getMinutes();
+    const seconds = timestamp.getSeconds();
+    const msec = timestamp.getMilliseconds();
+    const timeFormatted = [ hours, minutes, seconds, msec ].join(timeDelimiter);
 
-    const month = months[ date.getMonth() ];
-    const day = date.getDay();
-    const year = date.getFullYear();
-    let formattedDate = month + '-' + day + '-' + year;
-
-    // check format; if nothing was passed then assume default
-    if (format === '') {
-        return formattedDate;
-    }
-
-    if (format === 'dmy') {
+    // check for Format options
+    // default does not include the time
+    if (lowerFormat === 'dmy') {
         // day month year
-        formattedDate = day + '-' + month + '-' + year;
+        dateParts = [ day, month, year ];
     }
-    else if (format === 'ymd') {
+    else if (lowerFormat === 'ymd') {
         // day month year
-        formattedDate = year + '-' + month + '-' + day;
+        dateParts = [ year, month, day ];
     }
     else {
         // default to month day year
-        // format not found assume default then
-
+        // Format not found assume default then
+        createMessage('Format Not Found', 'The format ' + lowerFormat + '  was not found -- default is being used.');
+        dateParts = [ month, day, year ];
     }
 
-    return formattedDate;
+    let dateFormatted = dateParts.join(dateDelimiter);
+
+    // check if time is wanted
+    if (includeTime === true) {
+        dateFormatted = dateFormatted + '-' + timeFormatted;
+    }
+
+
+    return dateFormatted.toString();
 }
 
 /**
@@ -81,4 +97,5 @@ const getUnixTimestamp = () => {
     return unixDate;
 }; //  [ end : getUnixTimestamp ]
 
-module.exports = { formatDate, getUnixTimestamp };
+
+module.exports = { formatTimestamp, getUnixTimestamp };
