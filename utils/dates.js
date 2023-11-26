@@ -3,9 +3,8 @@
   * Dates are ZERO based
   * Yes, you read that correctly, DATES ARE ZERO BASED HERE
   * 
-  * This assumes that
+  * 
 */
-
 const createMessage = require('./createMessage');
 
 const months = [
@@ -72,4 +71,14 @@ function formatDate (date, format = '') {
     return formattedDate;
 }
 
-module.exports = { formatDate };
+/**
+ * @name getUnixTimestamp
+ * @description gets the current unix (epoch) timestamp as a string
+ * @returns unix timestamp
+*/
+const getUnixTimestamp = () => {
+    const unixDate = Math.floor(Date.now() / 1000).toString();
+    return unixDate;
+}; //  [ end : getUnixTimestamp ]
+
+module.exports = { formatDate, getUnixTimestamp };

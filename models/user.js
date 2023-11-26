@@ -15,13 +15,13 @@ const { Schema, model } = require('mongoose');
 const userSchema = new Schema(
     {
         username: {
-            type: { String },
+            type: String,
             required: true,
             unique: true,
             trim: true
         },
         email: {
-            type: { String },
+            type: String,
             required: true,
             unique: true,
             trim: true
@@ -58,4 +58,4 @@ userSchema.virtual('countAllFriends')
 const User = model('User', userSchema);
 
 // Export
-module.exports = User;
+module.exports = { User };

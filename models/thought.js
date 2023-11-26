@@ -9,31 +9,32 @@
 
 // Imports
 const { Schema, model } = require('mongoose');
-const formatDate = require('../utils/dates');
+const reactionSchema = require('./reaction');
+const { formatTimestamp } = require('../utils/dates');
 
 // Schema Create
 const thoughtSchema = new Schema(
     {
         thoughtText: {
-            type: { String },
+            type: String,
             required: true,
             minLength: 1,
             maxLength: 280
             // is this inclusive or exclusive on the length?
         },
         createdAt: {
-            type: { Date },
+            type: Date,
             default: Date.now,
             // want to avoid a virtal here, such that, I do NOT have to use a different field name at each implementation of the formatted date, and the get is called 
             get: function (toFormat) {
-                return formatDate(toFormat);
+                return formatTimestamp('dmy');
             }
         },
         username: {
-            type: { String },
+            type: String,
             required: true,
-            reactions: [ reactionSchema ]
-        }
+        },
+        reactions: [ reactionSchema ]
     },
     {
         toJSON: {
@@ -52,7 +53,7 @@ thoughtSchema.virtual('countAllReactions')
 
 
 // Assign the Model
-const Thoughts = model('Thought', thoughtSchema);
+const Thought = model('Thought', thoughtSchema);
 
 // Export
-module.exports = Thoughts;
+module.exports = { Thought };
