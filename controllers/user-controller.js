@@ -85,7 +85,7 @@ const userController = {
         } catch (err) {
             createMessage('Adding User Error', 'Cannot get the users...', 'newUser', err);
 
-            res.status(500).json('Please, Try your request again, and if there is an issue contact the Developer.');
+            res.status(400).json({ "response": 'There was an issue adding the user. Please try again' });
         }
     },
 
