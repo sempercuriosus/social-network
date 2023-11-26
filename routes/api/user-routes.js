@@ -1,43 +1,24 @@
+
+// Imports
 const router = require('express').Router();
-const { User } = require('../../models/user');
-// const { Thought } = require('../../models/thought');
-const { createMessage } = require('../../utils/createMessage');
-const { getUnixTimestamp } = require('../../utils/dates');
+const controller = require('../../controllers/user-controller');
 
-router.get('/', async (req, res) => {
-    try {
-        const dbUsers = await User.find().select('-__v');
+// ALL Users
+router.get('/', controller.getAllUsers);
 
-        res.json(dbUsers);
-    } catch (err) {
-        createMessage('Users Error', 'Cannot get the users...', 'User GET', err);
+// ONE (single) User 
+router.get('/:userId', controller.getOneUser);
 
-        res.status(500).json('NO DATA');
-    }
-});
+// Add a new user
+router.post('/add', controller.newUser);
 
-router.post('/add', async (req, res) => {
-    try {
-        const timestamp = getUnixTimestamp();
+// Update User
+router.put('/:userId', controller.updateUser);
 
-        const username = req.body.username + timestamp;
-        const email = timestamp + req.body.email;
-        const dbUsers = await User.create({ username, email });
+// Delete User
+router.delete('/:userId', controller.deleteUser);
 
-        createMessage('Adding User', 'The User ' + username + ' with the email ' + email + ' was added');
-
-        res.status(201).json(dbUsers);
-
-    } catch (err) {
-        createMessage('Adding User Error', 'Cannot get the users...', 'User POST', err);
-
-        res.status(500).json('Please, Try your request again, and if there is an issue contact the Developer.');
-    }
-});
-
-router.get('/ping', (req, res) => {
-    console.log('The user has user pinged');
-    res.send('User Me To Ping');
-});
+// Ping Server Is Up
+router.get('/ping', controller.userPing);
 
 module.exports = router;

@@ -9,6 +9,7 @@
 
 // Imports
 const { Schema, model } = require('mongoose');
+const reactionSchema = require('./reaction');
 const formatDate = require('../utils/dates');
 
 // Schema Create
