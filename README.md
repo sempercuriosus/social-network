@@ -154,7 +154,8 @@ Installing the Development Depenencies and Depenencies use the following command
 
 The App Is Deployed In The Following Location
 
--
+- This is an api, so it is not viewable or deployed outside what one can would run on their own computer.
+- Inside the `Demo` folder I have some walkthrough videos that show the backend functions
 
 ---
 
@@ -215,3 +216,4 @@ If you have any questions about the repo, open an issue, or would like to contac
 ---
 
 ===
+
